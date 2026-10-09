@@ -1,0 +1,921 @@
+<div class="calendar">
+
+  <!-- ================================================= -->
+  <!-- HEADER -->
+  <!-- ================================================= -->
+
+  <header class="calendar-header">
+
+    <h1>
+      {{ headerTitle }}
+    </h1>
+
+    <div class="view-switcher">
+
+      <button
+        type="button"
+        [class.active]="selectedView === 'month'"
+        (click)="selectView('month')"
+      >
+        Month
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedView === 'week'"
+        (click)="selectView('week')"
+      >
+        Week
+      </button>
+
+      <button
+        type="button"
+        [class.active]="selectedView === 'year'"
+        (click)="selectView('year')"
+      >
+        Year
+      </button>
+
+    </div>
+
+    <div class="calendar-navigation">
+
+      <button
+        type="button"
+        aria-label="Previous"
+        (click)="previous()"
+      >
+        ‹
+      </button>
+
+      <button
+        type="button"
+        aria-label="Next"
+        (click)="next()"
+      >
+        ›
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- ================================================= -->
+  <!-- MONTH -->
+  <!-- ================================================= -->
+
+  @if (selectedView === 'month') {
+
+    <section class="month-view">
+
+      <div class="weekdays">
+
+        @for (
+          day of weekDays;
+          track day
+        ) {
+
+          <div class="weekday">
+            {{ day }}
+          </div>
+
+        }
+
+      </div>
+
+
+      <div class="calendar-grid">
+
+        @for (
+          day of calendarDays;
+          track $index
+        ) {
+
+          <div
+            class="calendar-day"
+            [class.other-month]="!day.currentMonth"
+            [class.today]="day.isToday"
+
+            (click)="
+              openCreateTask(
+                day.fullDate,
+                $event
+              )
+            "
+          >
+
+            <span class="date-number">
+              {{ day.date }}
+            </span>
+
+
+            <!-- TASKS -->
+
+            <div class="day-tasks">
+
+              @for (
+                task of getVisibleTasksForDate(day.fullDate);
+                track task.id
+              ) {
+
+                <div
+                  class="task-card"
+                  [class.completed]="task.completed"
+
+                  (click)="
+                    openEditTask(
+                      task,
+                      $event
+                    )
+                  "
+                >
+
+                  <!-- CHECKBOX -->
+
+                  <button
+                    type="button"
+                    class="task-check"
+                    [class.checked]="task.completed"
+
+                    [attr.aria-label]="
+                      task.completed
+                        ? 'Mark task incomplete'
+                        : 'Mark task complete'
+                    "
+
+                    (click)="
+                      toggleTaskCompleted(
+                        task,
+                        $event
+                      )
+                    "
+                  >
+
+                    @if (task.completed) {
+                      ✓
+                    }
+
+                  </button>
+
+
+                  <!-- TASK CONTENT -->
+
+                  <div class="task-card-main">
+
+                    <div class="task-title">
+                      {{ task.title }}
+                    </div>
+
+
+                    <div class="task-hover-details">
+
+                      @if (task.description) {
+
+                        <p>
+                          {{ task.description }}
+                        </p>
+
+                      }
+
+
+                      @if (task.subTasks?.length) {
+
+                        <span class="task-meta">
+
+                          {{ getCompletedSubTaskCount(task) }}
+                          /
+                          {{ task.subTasks.length }}
+                          subtasks completed
+
+                        </span>
+
+                      }
+
+
+                      <span class="task-edit-hint">
+                        Click to edit
+                      </span>
+
+
+                      <!-- REMAINING TASKS -->
+
+                      @if (
+                        getHiddenTaskCount(day.fullDate) > 0
+                      ) {
+
+                        <button
+                          type="button"
+                          class="more-tasks"
+
+                          (click)="
+                            openMoreTasks(
+                              day.fullDate,
+                              $event
+                            )
+                          "
+                        >
+
+                          +{{ getHiddenTaskCount(day.fullDate) }}
+                          more
+                          · Switch to Week view for details
+
+                        </button>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- ================================================= -->
+  <!-- WEEK -->
+  <!-- ================================================= -->
+
+  @if (selectedView === 'week') {
+
+    <section class="week-view">
+
+      <div class="week-grid">
+
+        @for (
+          day of weekDaysData;
+          let i = $index;
+          track i
+        ) {
+
+          <div
+            class="week-day"
+            [class.today]="day.isToday"
+          >
+
+            <div class="week-day-header">
+
+              <span class="week-day-name">
+                {{ weekDays[i] }}
+              </span>
+
+              <span class="week-date">
+                {{ day.date }}
+              </span>
+
+            </div>
+
+
+            <div class="week-day-content">
+
+              @for (
+                task of getTasksForDate(day.fullDate);
+                track task.id
+              ) {
+
+                <div
+                  class="task-card"
+                  [class.completed]="task.completed"
+
+                  (click)="
+                    openEditTask(
+                      task,
+                      $event
+                    )
+                  "
+                >
+
+                  <button
+                    type="button"
+                    class="task-check"
+                    [class.checked]="task.completed"
+
+                    [attr.aria-label]="
+                      task.completed
+                        ? 'Mark task incomplete'
+                        : 'Mark task complete'
+                    "
+
+                    (click)="
+                      toggleTaskCompleted(
+                        task,
+                        $event
+                      )
+                    "
+                  >
+
+                    @if (task.completed) {
+                      ✓
+                    }
+
+                  </button>
+
+
+                  <div class="task-card-main">
+
+                    <div class="task-title">
+                      {{ task.title }}
+                    </div>
+
+
+                    <div class="task-hover-details">
+
+                      @if (task.description) {
+
+                        <p>
+                          {{ task.description }}
+                        </p>
+
+                      }
+
+
+                      @if (task.subTasks?.length) {
+
+                        <span class="task-meta">
+
+                          {{ getCompletedSubTaskCount(task) }}
+                          /
+                          {{ task.subTasks.length }}
+                          subtasks completed
+
+                        </span>
+
+                      }
+
+
+                      <span class="task-edit-hint">
+                        Click to edit
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              }
+                            <!-- DAILY PROGRESS -->
+
+              @if (
+                getWeekProgressTotalItems(
+                  day.fullDate
+                ) > 0
+              ) {
+
+                <div class="week-progress">
+
+                  <div class="week-progress-header">
+
+                    <span>
+                      Daily Progress
+                    </span>
+
+                    <span>
+                      {{ getWeekProgress(day.fullDate) }}%
+                    </span>
+
+                  </div>
+
+
+                  <div class="progress-track">
+
+                    <div
+                      class="progress-fill"
+                      [class]="
+                        getWeekProgressClass(
+                          getWeekProgress(
+                            day.fullDate
+                          )
+                        )
+                      "
+                      [style.width.%]="
+                        getWeekProgress(
+                          day.fullDate
+                        )
+                      "
+                    ></div>
+
+                  </div>
+
+
+                  <div class="week-progress-footer">
+
+                    {{ getWeekProgressCompletedItems(day.fullDate) }}
+                    /
+                    {{ getWeekProgressTotalItems(day.fullDate) }}
+                    completed
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- ================================================= -->
+  <!-- YEAR -->
+  <!-- ================================================= -->
+
+  @if (selectedView === 'year') {
+
+    <section class="year-view">
+
+      <div class="year-grid">
+
+        @for (
+          month of miniMonths;
+          track month.monthIndex
+        ) {
+
+          <div
+            class="mini-month"
+
+            (click)="
+              selectMonth(
+                month.monthIndex
+              )
+            "
+          >
+
+            <h3>
+              {{ month.name }}
+            </h3>
+
+
+            <div class="mini-weekdays">
+
+              @for (
+                day of weekDays;
+                track day
+              ) {
+
+                <span>
+                  {{ day.charAt(0) }}
+                </span>
+
+              }
+
+            </div>
+
+
+            <div class="mini-calendar">
+
+              @for (
+                day of month.days;
+                track $index
+              ) {
+
+                <span
+                  class="mini-day"
+                  [class.other-month]="!day.currentMonth"
+                >
+                  {{ day.date }}
+                </span>
+
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- ================================================= -->
+  <!-- CREATE / EDIT MODAL -->
+  <!-- ================================================= -->
+
+  @if (modalOpen) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeModal()"
+    >
+
+      <section
+        class="task-modal"
+        role="dialog"
+        aria-modal="true"
+
+        (click)="$event.stopPropagation()"
+      >
+
+        <!-- HEADER -->
+
+        <header class="task-modal-header">
+
+          <div>
+
+            <h2>
+
+              {{
+                modalMode === 'create'
+                  ? 'Create Task'
+                  : 'Edit Task'
+              }}
+
+            </h2>
+
+
+            <p>
+
+              {{
+                modalMode === 'create'
+                  ? 'Create a new task for this date.'
+                  : 'Update your task and subtasks.'
+              }}
+
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="modal-close"
+
+            (click)="closeModal()"
+          >
+            ×
+          </button>
+
+        </header>
+
+
+        <!-- BODY -->
+
+        <div class="task-modal-body">
+
+          <!-- TITLE -->
+
+          <label class="form-field">
+
+            <span>
+              Title
+            </span>
+
+            <input
+              type="text"
+              [(ngModel)]="modalTitle"
+
+              maxlength="150"
+
+              placeholder="What needs to be done?"
+            >
+
+          </label>
+
+
+          <!-- DESCRIPTION -->
+
+          <label class="form-field">
+
+            <span>
+              Description
+            </span>
+
+            <textarea
+              [(ngModel)]="modalDescription"
+
+              rows="4"
+
+              maxlength="1000"
+
+              placeholder="Add some details..."
+            ></textarea>
+
+          </label>
+
+
+          <!-- DATE -->
+
+          <label class="form-field">
+
+            <span>
+              Date
+            </span>
+
+            <input
+              type="date"
+              [(ngModel)]="modalDate"
+            >
+
+          </label>
+
+
+          <!-- COMPLETION -->
+
+          @if (modalMode === 'edit') {
+
+            <label class="modal-completion">
+
+              <span>
+                Task completed
+              </span>
+
+              <input
+                type="checkbox"
+                [(ngModel)]="modalCompleted"
+              >
+
+            </label>
+
+          }
+
+
+          <!-- SUBTASKS -->
+
+          <section class="subtasks-section">
+
+            <div class="section-heading">
+
+              <div>
+
+                <h3>
+                  Subtasks
+                </h3>
+
+                <span>
+                  Break the task into smaller steps.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="subtask-list">
+
+              @if (
+                modalSubTasks.length === 0
+              ) {
+
+                <div class="empty-subtasks">
+                  No subtasks yet.
+                </div>
+
+              }
+
+
+              @for (
+                subTask of modalSubTasks;
+                track subTask.id ?? $index
+              ) {
+
+                <div class="subtask-row">
+
+                  <button
+                    type="button"
+                    class="subtask-check"
+
+                    [class.checked]="
+                      subTask.completed
+                    "
+
+                    [disabled]="!subTask.id"
+
+                    (click)="
+                      toggleModalSubtask(
+                        subTask
+                      )
+                    "
+                  >
+
+                    @if (subTask.completed) {
+                      ✓
+                    }
+
+                  </button>
+
+
+                  <input
+                    type="text"
+                    [(ngModel)]="subTask.title"
+
+                    placeholder="Subtask title"
+                  >
+
+
+                  <button
+                    type="button"
+                    class="subtask-delete"
+
+                    (click)="
+                      deleteModalSubtask(
+                        subTask,
+                        $index
+                      )
+                    "
+                  >
+                    🗑
+                  </button>
+
+                </div>
+
+              }
+
+            </div>
+
+
+            <!-- ADD SUBTASK -->
+
+            <div class="add-subtask-row">
+
+              <input
+                type="text"
+                [(ngModel)]="newSubtaskTitle"
+
+                placeholder="New subtask..."
+
+                (keydown.enter)="
+                  addSubtask()
+                "
+              >
+
+
+              <button
+                type="button"
+                class="add-subtask-button"
+
+                (click)="addSubtask()"
+              >
+                + Add Subtask
+              </button>
+
+            </div>
+
+
+            <!-- ADD ANOTHER INDEPENDENT TASK -->
+
+            <button
+              type="button"
+              class="add-another-task-button"
+
+              [disabled]="saving"
+
+              (click)="addAnotherTask()"
+            >
+              + Add Another Task
+            </button>
+
+          </section>
+
+
+          @if (modalError) {
+
+            <div class="modal-error">
+              {{ modalError }}
+            </div>
+
+          }
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <footer class="task-modal-footer">
+
+          @if (
+            modalMode === 'edit'
+          ) {
+
+            <button
+              type="button"
+              class="delete-task-button"
+
+              (click)="deleteTask()"
+            >
+              Delete task
+            </button>
+
+          }
+
+
+          <div class="modal-footer-actions">
+
+            <button
+              type="button"
+              class="cancel-button"
+
+              [disabled]="saving"
+
+              (click)="closeModal()"
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="button"
+              class="save-button"
+
+              [disabled]="
+                saving ||
+                !isModalValid
+              "
+
+              (click)="saveTask()"
+            >
+
+              @if (saving) {
+
+                Saving...
+
+              } @else {
+
+                {{
+                  modalMode === 'create'
+                    ? 'Create Task'
+                    : 'Save Changes'
+                }}
+
+              }
+
+            </button>
+
+          </div>
+
+        </footer>
+
+      </section>
+
+    </div>
+
+  }
+
+
+  <!-- ================================================= -->
+  <!-- TOAST -->
+  <!-- ================================================= -->
+
+  @if (toastVisible) {
+
+    <div
+      class="task-toast"
+      role="status"
+      aria-live="polite"
+    >
+
+      <span>
+        {{ toastMessage }}
+      </span>
+
+
+      @if (toastActionLabel) {
+
+        <button
+          type="button"
+          (click)="runToastAction()"
+        >
+          {{ toastActionLabel }}
+        </button>
+
+      }
+
+
+      <button
+        type="button"
+        class="toast-close"
+
+        (click)="hideToast()"
+      >
+        ×
+      </button>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,99 @@
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: #fafafa;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 16px;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.brand h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.brand p {
+  margin: 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.register-header {
+  margin-bottom: 24px;
+}
+
+.register-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.register-header p {
+  margin: 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-control {
+  padding: 11px 12px;
+  border-radius: 8px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #212529;
+}
+
+.btn {
+  padding: 11px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: #777;
+}
+
+.login-link a {
+  margin-left: 5px;
+  color: #212529;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.alert {
+  font-size: 14px;
+}

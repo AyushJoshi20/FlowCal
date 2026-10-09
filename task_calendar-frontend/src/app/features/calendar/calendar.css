@@ -1,0 +1,2088 @@
+.calendar {
+
+  width: 100%;
+  max-width: 1400px;
+  min-height: calc(100vh - 40px);
+
+  box-sizing: border-box;
+
+  margin: 20px auto;
+
+  padding: 20px 28px;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.calendar-header {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 14px;
+
+}
+
+
+.calendar-header h1 {
+
+  margin: 0;
+
+  font-size: 28px;
+
+  font-weight: 500;
+
+  letter-spacing: -0.6px;
+
+  color: #111;
+
+}
+
+
+.view-switcher {
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 4px;
+
+  background: #f7f7f7;
+
+  border: 1px solid #dedede;
+
+  border-radius: 10px;
+
+}
+
+
+.view-switcher button {
+
+  border: none;
+
+  background: transparent;
+
+  padding: 7px 15px;
+
+  border-radius: 7px;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  color: #777;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+
+}
+
+
+.view-switcher button:hover {
+
+  color: #222;
+
+}
+
+
+.view-switcher button.active {
+
+  background: #fff;
+
+  color: #111;
+
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.calendar-navigation {
+
+  display: flex;
+
+  gap: 12px;
+
+}
+
+
+.calendar-navigation button {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 36px;
+
+  height: 36px;
+
+  border: 1px solid #d5d5d5;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #333;
+
+  font-size: 21px;
+
+  font-weight: 300;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+
+}
+
+
+.calendar-navigation button:hover {
+
+  background: #f5f5f5;
+
+}
+
+
+.calendar-navigation button:active {
+
+  transform: scale(0.94);
+
+}
+
+
+/* =========================================================
+   MONTH
+   ========================================================= */
+
+.month-view {
+
+  margin-top: 32px;
+
+}
+
+
+.weekdays {
+
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  margin-bottom: 8px;
+
+}
+
+
+.weekday {
+
+  text-align: center;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: 1px;
+
+  color: #888;
+
+}
+
+
+.calendar-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  grid-auto-rows: 1fr;
+
+  height: calc(100vh - 340px);
+
+  border: 1px solid #d7d7d7;
+
+  border-radius: 14px;
+
+  background: #fff;
+
+  /*
+   * Must be visible so the hover task
+   * can expand over neighboring cells.
+   */
+
+  overflow: visible;
+
+}
+
+
+.calendar-day {
+
+  position: relative;
+
+  min-height: 0;
+
+  padding: 12px;
+
+  border-right: 1px solid #dfdfdf;
+
+  border-bottom: 1px solid #dfdfdf;
+
+  background: #fff;
+
+  display: flex;
+
+  flex-direction: column;
+
+  transition: background 0.15s ease;
+
+  cursor: pointer;
+
+  z-index: 1;
+
+}
+
+
+.calendar-day:hover {
+
+  background: #fafafa;
+
+  z-index: 20;
+
+}
+
+
+.calendar-day:nth-child(7n) {
+
+  border-right: none;
+
+}
+
+
+.calendar-day:nth-last-child(-n + 7) {
+
+  border-bottom: none;
+
+}
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+.date-number {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 28px;
+
+  height: 28px;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  color: #222;
+
+}
+
+
+.calendar-day.other-month .date-number {
+
+  color: #bdbdbd;
+
+}
+
+
+.calendar-day.today .date-number {
+
+  background: #111;
+
+  color: #fff;
+
+  border-radius: 50%;
+
+}
+
+
+/* =========================================================
+   TASKS
+   ========================================================= */
+
+.day-tasks {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  margin-top: 10px;
+
+  /*
+   * Month view only renders one task.
+   * The remaining tasks are available in Week view.
+   */
+
+  max-height: 160px;
+
+  overflow: visible;
+
+}
+
+
+/* =========================================================
+   TASK CARD
+   ========================================================= */
+
+.task-card {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 8px;
+
+  min-height: 34px;
+
+  padding: 7px 9px;
+
+  border: 1px solid transparent;
+
+  border-radius: 10px;
+
+  background: #f3f3f3;
+
+  font-size: 12px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+
+  z-index: 1;
+
+}
+
+
+.task-card:hover {
+
+  background: #fff;
+
+  border-color: #e5e5e5;
+
+  box-shadow:
+    0 14px 35px rgba(0, 0, 0, 0.13);
+
+  transform: translateY(-2px);
+
+  z-index: 100;
+
+}
+
+
+.task-check {
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 17px;
+
+  height: 17px;
+
+  margin-top: 1px;
+
+  padding: 0;
+
+  border: 1.5px solid #aaa;
+
+  border-radius: 5px;
+
+  background: #fff;
+
+  color: #fff;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+}
+
+
+.task-check:hover {
+
+  border-color: #111;
+
+  transform: scale(1.05);
+
+}
+
+
+.task-check.checked {
+
+  background: #111;
+
+  border-color: #111;
+
+}
+
+
+/* =========================================================
+   TASK CONTENT
+   ========================================================= */
+
+.task-card-main {
+
+  min-width: 0;
+
+  flex: 1;
+
+}
+
+
+.task-title {
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  color: #222;
+
+}
+
+
+.task-card.completed .task-title {
+
+  color: #888;
+
+  text-decoration: line-through;
+
+}
+
+
+/* =========================================================
+   HOVER DETAILS
+   ========================================================= */
+
+.task-hover-details {
+
+  max-height: 0;
+
+  overflow: hidden;
+
+  opacity: 0;
+
+  transform: translateY(-3px);
+
+  transition:
+    max-height 0.22s ease,
+    opacity 0.18s ease,
+    transform 0.22s ease;
+
+  pointer-events: none;
+
+}
+
+
+.task-card:hover .task-hover-details {
+
+  /*
+   * Increased so the "more tasks" message
+   * can live inside the hover area.
+   */
+
+  max-height: 180px;
+
+  margin-top: 6px;
+
+  opacity: 1;
+
+  transform: translateY(0);
+
+  pointer-events: auto;
+
+}
+
+
+.task-hover-details p {
+
+  display: -webkit-box;
+
+  margin: 0 0 6px;
+
+  color: #666;
+
+  font-size: 11px;
+
+  line-height: 1.45;
+
+  -webkit-line-clamp: 3;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+
+}
+
+
+.task-meta {
+
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #888;
+
+  font-size: 10px;
+
+}
+
+
+.task-edit-hint {
+
+  display: block;
+
+  color: #aaa;
+
+  font-size: 9px;
+
+  font-weight: 500;
+
+  letter-spacing: 0.3px;
+
+}
+
+
+/* =========================================================
+   MORE TASKS
+   ========================================================= */
+
+.more-tasks {
+
+  display: block;
+
+  width: 100%;
+
+  margin-top: 8px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #999;
+
+  font-family: inherit;
+
+  font-size: 9px;
+
+  font-weight: 500;
+
+  line-height: 1.4;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+
+  transition:
+    color 0.15s ease;
+
+}
+
+
+.more-tasks:hover {
+
+  color: #111;
+
+}
+
+
+/* =========================================================
+   WEEK
+   ========================================================= */
+
+.week-view {
+
+  margin-top: 32px;
+
+}
+
+
+.week-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  min-height: calc(100vh - 290px);
+
+  border: 1px solid #d7d7d7;
+
+  border-radius: 14px;
+
+  background: #fff;
+
+  overflow: visible;
+
+}
+
+
+.week-day {
+
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  border-right: 1px solid #dfdfdf;
+
+  background: #fff;
+
+  position: relative;
+
+  z-index: 1;
+
+}
+
+
+.week-day:last-child {
+
+  border-right: none;
+
+}
+
+
+.week-day:hover {
+
+  background: #fafafa;
+
+  z-index: 20;
+
+}
+
+
+.week-day-header {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 16px 8px;
+
+  border-bottom: 1px solid #dfdfdf;
+
+}
+
+
+.week-day-name {
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: 1px;
+
+  color: #888;
+
+}
+
+
+.week-date {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 32px;
+
+  height: 32px;
+
+  font-size: 15px;
+
+  font-weight: 500;
+
+  color: #222;
+
+}
+
+
+.week-day.today .week-date {
+
+  background: #111;
+
+  color: #fff;
+
+  border-radius: 50%;
+
+}
+
+
+.week-day-content {
+
+  flex: 1;
+
+  padding: 12px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  overflow: visible;
+
+}
+
+
+.week-day-content .task-card {
+
+  width: 100%;
+
+}
+
+
+/* =========================================================
+   YEAR
+   ========================================================= */
+
+.year-view {
+
+  margin-top: 28px;
+
+}
+
+
+.year-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-rows: repeat(3, 1fr);
+
+  gap: 18px;
+
+  min-height: calc(100vh - 270px);
+
+}
+
+
+.mini-month {
+
+  padding: 14px;
+
+  border: 1px solid #dedede;
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+}
+
+
+.mini-month:hover {
+
+  background: #fafafa;
+
+  border-color: #cfcfcf;
+
+  transform: translateY(-2px);
+
+}
+
+
+.mini-month h3 {
+
+  margin: 0 0 12px;
+
+  font-size: 15px;
+
+  font-weight: 500;
+
+  letter-spacing: -0.2px;
+
+  color: #111;
+
+}
+
+
+.mini-weekdays {
+
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  margin-bottom: 5px;
+
+}
+
+
+.mini-weekdays span {
+
+  text-align: center;
+
+  font-size: 8px;
+
+  font-weight: 600;
+
+  color: #aaa;
+
+}
+
+
+.mini-calendar {
+
+  display: grid;
+
+  grid-template-columns: repeat(7, 1fr);
+
+  gap: 2px;
+
+}
+
+
+.mini-day {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  aspect-ratio: 1;
+
+  font-size: 9px;
+
+  color: #333;
+
+  border-radius: 50%;
+
+}
+
+
+.mini-day.other-month {
+
+  color: #d2d2d2;
+
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-backdrop {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(5px);
+
+  animation: fadeIn 0.15s ease;
+
+}
+
+
+.task-modal {
+
+  width: min(560px, 100%);
+
+  max-height: 86vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: #fff;
+
+  border: 1px solid #e5e5e5;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.22);
+
+  animation: modalIn 0.18s ease;
+
+}
+
+
+.task-modal-header {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid #ededed;
+
+}
+
+
+.task-modal-header h2 {
+
+  margin: 0;
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  letter-spacing: -0.4px;
+
+  color: #111;
+
+}
+
+
+.task-modal-header p {
+
+  margin: 5px 0 0;
+
+  color: #999;
+
+  font-size: 12px;
+
+}
+
+
+.modal-close {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 32px;
+
+  height: 32px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f5f5f5;
+
+  color: #555;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+}
+
+
+.modal-close:hover {
+
+  background: #ededed;
+
+  color: #111;
+
+}
+
+
+.task-modal-body {
+
+  padding: 22px 24px;
+
+  overflow-y: auto;
+
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form-field {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 18px;
+
+}
+
+
+.form-field > span {
+
+  color: #555;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.3px;
+
+}
+
+
+.form-field input,
+.form-field textarea {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #dedede;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  padding: 10px 12px;
+
+  color: #222;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+}
+
+
+.form-field textarea {
+
+  resize: vertical;
+
+  min-height: 90px;
+
+}
+
+
+.form-field input:focus,
+.form-field textarea:focus {
+
+  border-color: #999;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.04);
+
+}
+
+
+/* =========================================================
+   COMPLETION
+   ========================================================= */
+
+.modal-completion {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 12px;
+
+  margin-bottom: 18px;
+
+  border: 1px solid #ededed;
+
+  border-radius: 9px;
+
+  background: #fafafa;
+
+  color: #555;
+
+  font-size: 12px;
+
+}
+
+
+.modal-completion input {
+
+  width: 16px;
+
+  height: 16px;
+
+  accent-color: #111;
+
+  cursor: pointer;
+
+}
+
+
+/* =========================================================
+   SUBTASKS
+   ========================================================= */
+
+.subtasks-section {
+
+  margin-top: 24px;
+
+}
+
+
+.section-heading {
+
+  margin-bottom: 12px;
+
+}
+
+
+.section-heading h3 {
+
+  margin: 0;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: #222;
+
+}
+
+
+.section-heading span {
+
+  display: block;
+
+  margin-top: 3px;
+
+  color: #999;
+
+  font-size: 10px;
+
+}
+
+
+.subtask-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+}
+
+
+.empty-subtasks {
+
+  padding: 14px;
+
+  border: 1px dashed #ddd;
+
+  border-radius: 9px;
+
+  text-align: center;
+
+  color: #aaa;
+
+  font-size: 11px;
+
+}
+
+
+.subtask-row {
+
+  display: grid;
+
+  grid-template-columns: 24px 1fr 34px;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 7px;
+
+  border: 1px solid #ededed;
+
+  border-radius: 9px;
+
+  background: #fafafa;
+
+}
+
+
+.subtask-row input[type="text"] {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #222;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+}
+
+
+.subtask-check {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 18px;
+
+  height: 18px;
+
+  padding: 0;
+
+  border: 1.5px solid #aaa;
+
+  border-radius: 5px;
+
+  background: #fff;
+
+  color: #fff;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+
+.subtask-check.checked {
+
+  background: #111;
+
+  border-color: #111;
+
+}
+
+
+.subtask-check:disabled {
+
+  cursor: default;
+
+  opacity: 0.55;
+
+}
+
+
+.subtask-delete {
+
+  border: none;
+
+  background: transparent;
+
+  color: #aaa;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+}
+
+
+.subtask-delete:hover {
+
+  color: #d33;
+
+}
+
+
+.add-subtask-row {
+
+  display: flex;
+
+  gap: 8px;
+
+  margin-top: 10px;
+
+}
+
+
+.add-subtask-row input {
+
+  flex: 1;
+
+  min-width: 0;
+
+  border: 1px solid #dedede;
+
+  border-radius: 8px;
+
+  padding: 9px 10px;
+
+  outline: none;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+}
+
+
+.add-subtask-row input:focus {
+
+  border-color: #999;
+
+}
+
+
+.add-subtask-button {
+
+  flex-shrink: 0;
+
+  border: 1px solid #dedede;
+
+  border-radius: 8px;
+
+  background: #f7f7f7;
+
+  padding: 8px 10px;
+
+  color: #444;
+
+  font-size: 11px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+}
+
+
+.add-subtask-button:hover {
+
+  background: #eee;
+
+  color: #111;
+
+}
+
+
+/* =========================================================
+   ADD ANOTHER TASK
+   ========================================================= */
+
+.add-another-task-button {
+
+  width: 100%;
+
+  margin-top: 12px;
+
+  padding: 10px 12px;
+
+  border: 1px dashed #d4d4d4;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #555;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+}
+
+
+.add-another-task-button:hover {
+
+  background: #fafafa;
+
+  border-color: #aaa;
+
+  color: #111;
+
+}
+
+
+.add-another-task-button:disabled {
+
+  cursor: not-allowed;
+
+  opacity: 0.45;
+
+}
+
+
+.modal-error {
+
+  margin-top: 16px;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background: #fff2f2;
+
+  color: #c33;
+
+  font-size: 11px;
+
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
+.task-modal-footer {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 16px 24px;
+
+  border-top: 1px solid #ededed;
+
+  background: #fff;
+
+}
+
+
+.modal-footer-actions {
+
+  display: flex;
+
+  gap: 8px;
+
+  margin-left: auto;
+
+}
+
+
+.cancel-button,
+.save-button,
+.delete-task-button {
+
+  border-radius: 8px;
+
+  padding: 9px 14px;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+}
+
+
+.cancel-button {
+
+  border: 1px solid #dedede;
+
+  background: #fff;
+
+  color: #555;
+
+}
+
+
+.cancel-button:hover {
+
+  background: #f7f7f7;
+
+}
+
+
+.save-button {
+
+  border: 1px solid #111;
+
+  background: #111;
+
+  color: #fff;
+
+}
+
+
+.save-button:hover {
+
+  background: #2a2a2a;
+
+}
+
+
+.save-button:disabled,
+.cancel-button:disabled {
+
+  cursor: not-allowed;
+
+  opacity: 0.45;
+
+}
+
+
+.delete-task-button {
+
+  border: 1px solid #f0cccc;
+
+  background: #fff7f7;
+
+  color: #c33;
+
+}
+
+
+.delete-task-button:hover {
+
+  background: #fff0f0;
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.task-toast {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 24px;
+
+  z-index: 1100;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  max-width: calc(100vw - 40px);
+
+  padding: 11px 12px 11px 16px;
+
+  transform: translateX(-50%);
+
+  border: 1px solid #333;
+
+  border-radius: 12px;
+
+  background: #111;
+
+  color: #fff;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.2);
+
+  font-size: 12px;
+
+  animation: toastIn 0.2s ease;
+
+}
+
+
+.task-toast > button {
+
+  border: none;
+
+  background: transparent;
+
+  color: #fff;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+}
+
+
+.task-toast > button:hover {
+
+  text-decoration: underline;
+
+}
+
+
+.task-toast .toast-close {
+
+  padding: 0;
+
+  color: #999;
+
+  font-size: 17px;
+
+  text-decoration: none;
+
+}
+
+
+.task-toast .toast-close:hover {
+
+  color: #fff;
+
+  text-decoration: none;
+
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes fadeIn {
+
+  from {
+
+    opacity: 0;
+
+  }
+
+  to {
+
+    opacity: 1;
+
+  }
+
+}
+
+
+@keyframes modalIn {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(8px)
+      scale(0.98);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+
+  }
+
+}
+
+
+@keyframes toastIn {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateX(-50%)
+      translateY(10px);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateX(-50%)
+      translateY(0);
+
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .calendar {
+
+    padding: 20px 15px;
+
+  }
+
+
+  .calendar-grid {
+
+    height: calc(100vh - 330px);
+
+  }
+
+
+  .calendar-day {
+
+    padding: 8px;
+
+  }
+
+
+  .year-grid {
+
+    grid-template-columns: repeat(3, 1fr);
+
+    grid-template-rows: auto;
+
+    overflow-y: auto;
+
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .calendar {
+
+    padding: 15px 10px;
+
+  }
+
+
+  .calendar-header h1 {
+
+    font-size: 24px;
+
+  }
+
+
+  .week-day-name {
+
+    font-size: 9px;
+
+  }
+
+
+  .week-date {
+
+    width: 28px;
+
+    height: 28px;
+
+  }
+
+
+  .year-grid {
+
+    grid-template-columns: repeat(2, 1fr);
+
+  }
+
+
+  .task-modal {
+
+    max-height: 92vh;
+
+    border-radius: 16px;
+
+  }
+
+
+  .task-modal-header,
+  .task-modal-body,
+  .task-modal-footer {
+
+    padding-left: 16px;
+
+    padding-right: 16px;
+
+  }
+
+
+  .task-modal-footer {
+
+    flex-wrap: wrap;
+
+  }
+
+
+  .delete-task-button {
+
+    width: 100%;
+
+  }
+
+
+  .modal-footer-actions {
+
+    width: 100%;
+
+  }
+
+
+  .modal-footer-actions button {
+
+    flex: 1;
+
+  }
+
+
+  .add-subtask-row {
+
+    flex-direction: column;
+
+  }
+
+
+  .add-subtask-button {
+
+    width: 100%;
+
+  }
+
+}
+
+
+/* =========================================================
+   WEEK DAILY PROGRESS
+   ========================================================= */
+
+.week-progress {
+
+  margin-top: auto;
+
+  padding: 14px 4px 4px;
+
+}
+
+
+.week-progress-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 7px;
+
+}
+
+
+.week-progress-header span:first-child {
+
+  color: #888;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.5px;
+
+  text-transform: uppercase;
+
+}
+
+
+.week-progress-header span:last-child {
+
+  color: #555;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+}
+
+
+.progress-track {
+
+  width: 100%;
+
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #eeeeee;
+
+}
+
+
+.progress-fill {
+
+  height: 100%;
+
+  min-width: 0;
+
+  border-radius: 999px;
+
+  transition:
+    width 0.35s ease,
+    background-color 0.35s ease;
+
+}
+
+
+/* =========================================================
+   PROGRESS COLORS
+   ========================================================= */
+
+
+/* 0% - 24% */
+
+.progress-grey {
+
+  background: #d8d8d8;
+
+}
+
+
+/* 25% - 49% */
+
+.progress-blue {
+
+  background: #6b9ee8;
+
+}
+
+
+/* 50% - 74% */
+
+.progress-yellow {
+
+  background: #e5c65a;
+
+}
+
+
+/* 75% - 99% */
+
+.progress-light-green {
+
+  background: #8bc98b;
+
+}
+
+
+/* 100% */
+
+.progress-green {
+
+  background: #4caf50;
+
+}
+
+
+.week-progress-footer {
+
+  margin-top: 6px;
+
+  color: #aaa;
+
+  font-size: 9px;
+
+  text-align: right;
+
+}

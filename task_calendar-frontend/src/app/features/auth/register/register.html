@@ -1,0 +1,171 @@
+<div class="register-page">
+
+  <div class="register-card">
+
+    <div class="brand">
+      <h1>Task Calendar</h1>
+      <p>Plan less. Do more.</p>
+    </div>
+
+    <div class="register-header">
+      <h2>Create your account</h2>
+      <p>Start organizing your day.</p>
+    </div>
+
+    <!-- Success message -->
+    @if (successMessage) {
+      <div class="alert alert-success" role="alert">
+        {{ successMessage }}
+      </div>
+    }
+
+    <!-- Error message -->
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form
+      #registerForm="ngForm"
+      (ngSubmit)="registerForm.valid && register()"
+      novalidate
+    >
+
+      <!-- Username -->
+      <div class="mb-3">
+
+        <label for="username" class="form-label">
+          Username
+        </label>
+
+        <input
+          id="username"
+          type="text"
+          name="username"
+          class="form-control"
+          [(ngModel)]="username"
+          #usernameField="ngModel"
+          placeholder="Choose a username"
+          required
+          minlength="3"
+        />
+
+        @if (usernameField.invalid && usernameField.touched) {
+
+          @if (usernameField.errors?.['required']) {
+            <div class="validation-error">
+              Username is required.
+            </div>
+          }
+
+          @if (usernameField.errors?.['minlength']) {
+            <div class="validation-error">
+              Username must be at least 3 characters.
+            </div>
+          }
+
+        }
+
+      </div>
+
+
+      <!-- Email -->
+      <div class="mb-3">
+
+        <label for="email" class="form-label">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          name="email"
+          class="form-control"
+          [(ngModel)]="email"
+          #emailField="ngModel"
+          placeholder="you@example.com"
+          required
+          email
+        />
+
+        @if (emailField.invalid && emailField.touched) {
+
+          @if (emailField.errors?.['required']) {
+            <div class="validation-error">
+              Email is required.
+            </div>
+          }
+
+          @if (emailField.errors?.['email']) {
+            <div class="validation-error">
+              Please enter a valid email address.
+            </div>
+          }
+
+        }
+
+      </div>
+
+
+      <!-- Password -->
+      <div class="mb-4">
+
+        <label for="password" class="form-label">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          name="password"
+          class="form-control"
+          [(ngModel)]="password"
+          #passwordField="ngModel"
+          placeholder="Create a password"
+          required
+          minlength="6"
+        />
+
+        @if (passwordField.invalid && passwordField.touched) {
+
+          @if (passwordField.errors?.['required']) {
+            <div class="validation-error">
+              Password is required.
+            </div>
+          }
+
+          @if (passwordField.errors?.['minlength']) {
+            <div class="validation-error">
+              Password must be at least 6 characters.
+            </div>
+          }
+
+        }
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="btn btn-dark w-100"
+        [disabled]="registerForm.invalid || isLoading"
+      >
+        @if (isLoading) {
+          Creating account...
+        } @else {
+          Create account
+        }
+      </button>
+
+    </form>
+
+
+    <div class="login-link">
+      <span>Already have an account?</span>
+      <a routerLink="/login">Log in</a>
+    </div>
+
+  </div>
+
+</div>
